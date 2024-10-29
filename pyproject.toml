@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "pdf-chatbot"
+version = "0.1.0"
+description = ""
+authors = ["Vaibhav Jain <jainvaibhav671@gmail.com>"]
+readme = "README.md"
+packages = [{include = "pdf_chatbot", from = "src"}, {include = "db", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.4"
+pypdf = "^5.1.0"
+langchain-google-genai = "^2.0.1"
+python-dotenv = "^1.0.1"
+langchain-community = "^0.3.3"
+uvicorn = {extras = ["standard"], version = "^0.32.0"}
+python-multipart = "^0.0.16"
+nanoid = "^2.0.0"
+sqlalchemy = "^2.0.36"
+databases = "^0.9.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+app = "pdf_chatbot.app:main"

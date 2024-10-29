@@ -1,0 +1,6 @@
+.venv
+.*cache
+public/
+
+.env
+*.db
