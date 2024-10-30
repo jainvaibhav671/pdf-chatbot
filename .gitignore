@@ -2,5 +2,7 @@
 .*cache
 public/
 
+*__pycache__/
+
 .env
 *.db
