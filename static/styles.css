@@ -1,0 +1,32 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    margin-bottom: 20px;
+}
+
+#chatLog {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 200px;
+    overflow-y: scroll;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+}
+
+#chatLog div {
+    padding: 5px 0;
+}
+
+#chatSection {
+    margin-top: 20px;
+}

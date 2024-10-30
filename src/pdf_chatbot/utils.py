@@ -16,7 +16,6 @@ def save_file(file: UploadFile) -> str:
     file_name = f"{nanoid.generate(size=4)}-{file_name}".replace(" ", "-")
     file_path = os.path.join(PUBLIC_FOLDER, file_name)
 
-    print("file_path", file_path)
     with open(file_path, "wb") as f:
         f.write(file.file.read())
 
@@ -47,4 +46,11 @@ def log(logger: logging.Logger, *message: str, level: str = "debug"):
         logger.warning(" ".join(message))
     elif level == "error":
         logger.error(" ".join(message))
+
+def generate_session_id() -> str:
+    """
+    Generate a unique session ID
+    """
+
+    return nanoid.generate(size=8)
 

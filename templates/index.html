@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Chatbot</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        let socket;
+        
+        function uploadPDF(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(document.getElementById("uploadForm"));
+            const uploadMessage = document.getElementById("uploadMessage");
+
+            fetch('/upload-pdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.session_id) {
+                    document.getElementById("sessionId").innerText = `Session ID: ${data.session_id}`;
+                    setupWebSocket(data.session_id);
+                    uploadMessage.innerText = "File uploaded successfully!";
+                } else {
+                    uploadMessage.innerText = data.message || "An error occurred during upload.";
+                }
+            })
+            .catch(error => {
+                uploadMessage.innerText = "Failed to upload the file.";
+                console.error("Error uploading file:", error);
+            });
+        }
+
+        function setupWebSocket(session_id) {
+            socket = new WebSocket(`ws://${window.location.host}/question`);
+
+            socket.onopen = () => {
+                socket.send(JSON.stringify({ session_id: session_id }));
+                document.getElementById("chatSection").style.display = "block";
+            };
+
+            socket.onmessage = (event) => {
+                const chatLog = document.getElementById("chatLog");
+                chatLog.innerHTML += `<div>${event.data}</div>`;
+            };
+
+            socket.onclose = () => {
+                console.log("WebSocket closed");
+            };
+        }
+
+        function sendQuestion(event) {
+            event.preventDefault();
+            const questionInput = document.getElementById("questionInput");
+            const question = questionInput.value;
+            if (question && socket.readyState === WebSocket.OPEN) {
+                socket.send(question);
+                questionInput.value = "";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload PDF and Ask Questions</h1>
+
+        <!-- Upload PDF Form -->
+        <form id="uploadForm" enctype="multipart/form-data" onsubmit="uploadPDF(event)">
+            <label for="file">Upload PDF File:</label>
+            <input type="file" name="file" id="file" accept="application/pdf" required>
+            <button type="submit">Upload</button>
+        </form>
+        <p id="uploadMessage"></p>
+
+        <!-- Display session_id -->
+        <p id="sessionId"></p>
+
+        <!-- Chat Section -->
+        <div id="chatSection" style="display: none;">
+            <h2>Ask Questions about the PDF</h2>
+            <div id="chatLog" class="chat-log"></div>
+            
+            <form id="questionForm" onsubmit="sendQuestion(event)">
+                <input type="text" id="questionInput" placeholder="Type your question here..." required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
