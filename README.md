@@ -1,3 +1,5 @@
+> **The app doesn't work on Brave browser due to its default privacy settings, try it out on a firefox based browser**
+
 ## Table of Contents
 1. [Overview](#overview)
 2. [Architecture Components](#architecture-components)
@@ -26,6 +28,9 @@
      - [websocket_endpoint](#websocket_endpoint)
    - [Initialization of Chat Model](#initialization-of-chat-model)
 
+# Demo Video
+
+![Demo Video](./assets/video.webm)
 
 ### High-Level Design (HLD)
 
