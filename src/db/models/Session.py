@@ -1,6 +1,6 @@
-
+import json
 from sqlalchemy import Column, DateTime, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
@@ -12,7 +12,17 @@ class Session(Base):
     session_id= Column(String, unique=True, nullable=False)  # Foreign key if users exist
     document_path = Column(String, unique=True, nullable=False)
     date = Column(DateTime, nullable=False)
+    updated_at = Column(DateTime, nullable=False)
     context = Column(String, nullable=False)
 
-    # Chat objects stored as string
-    chat = Column(String, nullable=True, default="")
+    history = Column(String, nullable=True, default="")
+
+    def __repr__(self):
+        return json.dumps({
+            "id": self.id,
+            "session_id": self.session_id,
+            "document_path": self.document_path,
+            "date": self.date.isoformat(),  # Convert DateTime to ISO format
+            "updated_at": self.updated_at.isoformat(),
+            # "context": self.context,
+        })

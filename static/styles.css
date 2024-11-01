@@ -2,7 +2,6 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    text-align: center;
 }
 
 label {
@@ -16,17 +15,39 @@ input[type="file"] {
 
 #chatLog {
     border: 1px solid #ccc;
-    padding: 10px;
-    height: 200px;
     overflow-y: scroll;
     background-color: #f9f9f9;
     margin-bottom: 10px;
-}
 
-#chatLog div {
-    padding: 5px 0;
+    display: flex;
+    flex-flow: column;
+    gap: 2px;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 1em 2em;
+    align-items: center;
 }
 
 #chatSection {
     margin-top: 20px;
+}
+
+.chat-log {
+    text-decoration: underline;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.chat-question {
+    text-decoration: none;
+    color: black;
+    align-self: flex-end;
+    font-weight: bold;
+}
+
+.chat-answer {
+    text-decoration: none;
+    color: black;
+    align-self: flex-start;
 }

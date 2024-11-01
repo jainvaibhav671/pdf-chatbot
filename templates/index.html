@@ -44,7 +44,7 @@
 
             socket.onmessage = (event) => {
                 const chatLog = document.getElementById("chatLog");
-                chatLog.innerHTML += `<div>${event.data}</div>`;
+                chatLog.innerHTML += event.data;
             };
 
             socket.onclose = () => {
@@ -57,6 +57,8 @@
             const questionInput = document.getElementById("questionInput");
             const question = questionInput.value;
             if (question && socket.readyState === WebSocket.OPEN) {
+                const chatLog = document.getElementById("chatLog");
+                chatLog.innerHTML += `<div class='chat-question'>${question}</div>`;
                 socket.send(question);
                 questionInput.value = "";
             }
