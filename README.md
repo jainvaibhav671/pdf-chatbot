@@ -28,9 +28,7 @@
      - [websocket_endpoint](#websocket_endpoint)
    - [Initialization of Chat Model](#initialization-of-chat-model)
 
-# Demo Video
-
-[Demo Video](./assets/demo-video.mp4)
+> Demo Video Link: [Demo Video](https://drive.google.com/file/d/1aIlxDOuKZf_y4n6PXZsrZcQ6rHPXcsTA/view?usp=sharing)
 
 ### High-Level Design (HLD)
 
