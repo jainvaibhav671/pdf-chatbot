@@ -26,36 +26,36 @@ async def root(request: Request):
 @app.post("/upload-pdf")
 async def upload_pdf(file: UploadFile=File(...)):
     logger = get_logger("[upload-pdf]")
-    # try:
-    if not file.filename:
-        return {"success": False, "message": "No file uploaded."}
+    try:
+        if not file.filename:
+            return {"success": False, "message": "No file uploaded."}
 
-    if file.content_type != "application/pdf":
+        if file.content_type != "application/pdf":
+            return {
+                "success": False,
+                "message": "Invalid file type. Please upload a PDF file.",
+            }
+
+        file_path = save_file(file)
+
+        pages = read_pdf(file_path)
+        pages = list(map(lambda page: page.page_content, pages))
+
+        # Add the document to the database
+        session_id = create_session(file_path, pages)
+
+        log(logger, file_path.split("/")[-1], str(datetime.now()))
+        return PDFUploadModel(
+            filename=file_path.split("/")[-1],
+            upload_date=datetime.now(),
+            session_id=session_id,
+        )
+    except Exception as e:
+        print(e)
         return {
             "success": False,
-            "message": "Invalid file type. Please upload a PDF file.",
+            "message": "An error occurred while processing the PDF file.",
         }
-
-    file_path = save_file(file)
-
-    pages = read_pdf(file_path)
-    pages = list(map(lambda page: page.page_content, pages))
-
-    # Add the document to the database
-    session_id = create_session(file_path, pages)
-
-    log(logger, file_path.split("/")[-1], str(datetime.now()))
-    return PDFUploadModel(
-        filename=file_path.split("/")[-1],
-        upload_date=datetime.now(),
-        session_id=session_id,
-    )
-    # except Exception as e:
-    #     print(e)
-    #     return {
-    #         "success": False,
-    #         "message": "An error occurred while processing the PDF file.",
-    #     }
 
 
 @app.websocket("/question")
