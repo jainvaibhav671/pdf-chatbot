@@ -30,7 +30,7 @@
 
 # Demo Video
 
-![Demo Video](./assets/demo-video.webm)
+![Demo Video](./assets/demo-video.mp4)
 
 ### High-Level Design (HLD)
 
