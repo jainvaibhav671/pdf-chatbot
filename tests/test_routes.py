@@ -1,4 +1,3 @@
-from fastapi.websockets import WebSocketDisconnect
 from langchain_core.documents import Document
 import pytest
 from unittest.mock import patch, MagicMock

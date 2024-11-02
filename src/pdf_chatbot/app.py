@@ -6,6 +6,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from langchain_core.messages import AIMessage, HumanMessage
 
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 from db import create_session, get_session_data, update_session_data
 from pdf_chatbot.models import PDFUploadModel
 from pdf_chatbot.utils import get_logger, init_chat_model, log, read_pdf, save_file
@@ -13,6 +17,12 @@ from pdf_chatbot.utils import get_logger, init_chat_model, log, read_pdf, save_f
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+# Create a Limiter instance
+limiter = Limiter(key_func=get_remote_address)
+# Add the Limiter middleware and exception handler to the app
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -24,7 +34,8 @@ async def root(request: Request):
 
 
 @app.post("/upload-pdf")
-async def upload_pdf(file: UploadFile=File(...)):
+@limiter.limit("5/minute")
+async def upload_pdf(request: Request, file: UploadFile = File(...)):
     logger = get_logger("[upload-pdf]")
     try:
         if not file.filename:
@@ -86,15 +97,14 @@ async def websocket_endpoint(websocket: WebSocket):
             if len(question) > 0:
                 print(question)
                 chat_history.append(HumanMessage(content=question))
-                results = rag_chain.invoke({
-                    "history": chat_history,
-                    "input": question
-                })
+                results = rag_chain.invoke({"history": chat_history, "input": question})
                 print(results)
                 answer = f"<p class='chat-answer'>{results["answer"]}</p>"
                 chat_history.append(AIMessage(content=answer))
 
-                session_data = update_session_data(session_data, question, results["answer"])
+                session_data = update_session_data(
+                    session_data, question, results["answer"]
+                )
                 await websocket.send_text(answer)
 
     except WebSocketDisconnect:
